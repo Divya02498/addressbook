@@ -1,7 +1,7 @@
 pipeline {
     agent none
     tools {
-        maven 'mymaven'
+        maven 'my maven'
     }
 
     parameters{
