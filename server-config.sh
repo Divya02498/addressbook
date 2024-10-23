@@ -40,4 +40,9 @@ else
 fi
 
 # Run Maven package command
-mvn package
+if mvn package; then
+    echo "Maven package completed successfully."
+else
+    echo "Maven package failed."
+    exit 1
+fi
