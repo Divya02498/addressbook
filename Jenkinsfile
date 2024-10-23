@@ -11,7 +11,7 @@ pipeline {
         stage('Compile') {
             agent {label 'slave-linux'}
             steps {
-                echo ''Compiling Hello World in ${params.env}''
+                echo "Compiling Hello World in ${params.env}"
             }
         }
         stage('Test') {
@@ -28,7 +28,7 @@ pipeline {
         stage('Package') {
             agent {label 'slave-linux'}
             steps {
-                echo ''Packing Hello World app version ${params.APPVERSION}''
+                echo "Packing Hello World app version ${params.APPVERSION}"
             }
         }
     }
