@@ -9,7 +9,11 @@ pipeline {
     booleanParam(name: 'executeTests', defaultValue: true, description: 'decide to run tc')
     choice (name: 'APPVERSION', choices: ['1.1', '1.2', '1.3'])
     }
+    environment{
+        BUILD_SERVER='ec2-user@18.212.163.110'
+    }
 
+   
     stages {
         stage('Compile') {
             agent {label 'slave-linux'}
@@ -36,10 +40,14 @@ pipeline {
             }
         }
         stage('Package') {
-            agent {label 'slave-linux'}
+            agent any 
             steps {
+                sshagent(['slave2']) {
+             // some block
                 echo "Packing Hello World app version ${params.APPVERSION}"
-                sh 'mvn package'
+                sh "scp -o StrictHostKeyChecking=no server-config.sh ${BUILD_SERVER}:/home/ec2-user"
+                sh "ssh -o StrictHostKeyChecking=no ${BUILD_SERVER} 'bash server-config.sh'"
+            }
             }
         }
     }
