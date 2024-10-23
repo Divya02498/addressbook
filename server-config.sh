@@ -20,20 +20,25 @@ install_package maven
 # sudo systemctl start docker
 
 # Check if the addressbook directory exists
-if [ -d "/home/ec2-user/addressbook" ]; then
+REPO_DIR="/home/ec2-user/addressbook"
+if [ -d "$REPO_DIR" ]; then
     echo "Repository is cloned and exists."
-    cd /home/ec2-user/addressbook || { echo "Failed to change directory."; exit 1; }
+    cd "$REPO_DIR" || { echo "Failed to change directory."; exit 1; }
     git pull origin master
 else
     echo "Cloning the repository..."
-    git clone https://github.com/preethid/addressbook.git /home/ec2-user/addressbook
-    cd /home/ec2-user/addressbook || { echo "Failed to change directory."; exit 1; }
+    git clone https://github.com/preethid/addressbook.git "$REPO_DIR"
+    cd "$REPO_DIR" || { echo "Failed to change directory."; exit 1; }
     git checkout master
 fi
 
 # Build the Docker image (ensure you pass arguments $1 and $2 when running the script)
 if command -v docker &> /dev/null; then
-    sudo docker build -t "$1:$2" /home/ec2-user/addressbook
+    if [ -z "$1" ] || [ -z "$2" ]; then
+        echo "Usage: $0 <image_name> <image_tag>"
+        exit 1
+    fi
+    sudo docker build -t "$1:$2" "$REPO_DIR"
 else
     echo "Docker is not installed or not in the PATH."
     exit 1
